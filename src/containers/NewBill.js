@@ -8,7 +8,7 @@ export default class NewBill {
     this.store = store
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
-    const file = this.document.querySelector(`input[data-testid="file"]`)
+    let file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
     this.fileName = null
@@ -25,7 +25,9 @@ export default class NewBill {
     formData.append('file', file)
     formData.append('email', email)
 
-    this.store
+
+if (e.target.value.includes('jpg') || e.target.value.includes('jpeg')|| e.target.value.includes('png')){
+   this.store
       .bills()
       .create({
         data: formData,
@@ -39,6 +41,16 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+}else {
+  let errorFileFormat = document.createElement('p')
+  errorFileFormat.classList.add('text-warning-file', 'h6')
+  errorFileFormat.setAttribute('data-testid', 'errorFormat')
+  errorFileFormat.innerText = "Choisir un format supporté (.JPG, .JPEG, .PNG)"
+  e.target.parentNode.append(errorFileFormat)
+e.target.value = ''
+}
+
+   
   }
   handleSubmit = e => {
     e.preventDefault()
