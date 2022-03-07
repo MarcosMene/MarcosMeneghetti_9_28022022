@@ -44,10 +44,11 @@ if (e.target.value.includes('jpg') || e.target.value.includes('jpeg')|| e.target
 }else {
   let errorFileFormat = document.createElement('p')
   errorFileFormat.classList.add('text-warning-file', 'h6')
-  errorFileFormat.setAttribute('data-testid', 'errorFormat')
+  errorFileFormat.setAttribute('data-testid', 'errorFormatMessage')
   errorFileFormat.innerText = "Choisir un format supporté (.JPG, .JPEG, .PNG)"
   e.target.parentNode.append(errorFileFormat)
 e.target.value = ''
+
 }
 
    
