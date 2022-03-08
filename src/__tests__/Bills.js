@@ -195,7 +195,7 @@ test('fetches bill from mock API GET and data.length = 4', async ()=>{
 })
 
 test('fetches bills from an API then fails with 404 message error', async ()=>{
-  store.get.mockImplementationOnce(()=>{
+  store.list.mockImplementationOnce(()=>{
     Promise.reject(new Error('Erreur 404'))
   })
 const html = BillsUI({error: 'Erreur 404'})
