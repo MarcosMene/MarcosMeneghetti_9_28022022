@@ -187,8 +187,8 @@ const modale = screen.getAllByTestId('modaleFile')
 expect(modale).toBeTruthy()
 })
 test('fetches bill from mock API GET and data.length = 4', async ()=>{
-  const getSpy = jest.spyOn(store, 'get')
-  const bills = await store.get()
+  const getSpy = jest.spyOn(store, 'bills')
+  const bills = await store.list()
   expect(getSpy).toHaveBeenCalledTimes(1)
   expect(bills).toBeDefined()
   expect(bills.data.length).toBe(4)
@@ -204,13 +204,17 @@ const message = await screen.getByText(/Erreur 404/)
 expect(message).toBeTruthy()
 })
 test ('fetches messages from an API and fails with 500 message error', async ()=>{
-  store.get.mockImplementationOnce(()=>{
-    Promise.reject(new Error("Erreur 500"))
-  })
-const html = BillsUI({error: "Erreur 500"})
-document.body.innerHTML = html
-const message = await screen.getByText(/Erreur 500/)
-expect(message).toBeTruthy()
+  store.bills.mockImplementationOnce(() => {
+    return {
+      list : () =>  {
+        return Promise.reject(new Error("Erreur 500"))
+      }
+    }})
+
+  window.onNavigate(ROUTES_PATH.Bills)
+  await new Promise(process.nextTick);
+  const message = await screen.getByText(/Erreur 500/)
+  expect(message).toBeTruthy()
 })
   })
 })
