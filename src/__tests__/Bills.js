@@ -195,7 +195,7 @@ test('fetches bill from mock API GET and data.length = 4', async ()=>{
 })
 
 test('fetches bills from an API then fails with 404 message error', async ()=>{
-  store.list.mockImplementationOnce(()=>{
+  store.get.mockImplementationOnce(()=>{
     Promise.reject(new Error('Erreur 404'))
   })
 const html = BillsUI({error: 'Erreur 404'})
@@ -204,18 +204,14 @@ const message = await screen.getByText(/Erreur 404/)
 expect(message).toBeTruthy()
 })
 test ('fetches messages from an API and fails with 500 message error', async ()=>{
-  store.bills.mockImplementationOnce(() => {
-    return {
-      list : () =>  {
-        return Promise.reject(new Error("Erreur 500"))
-      }
-    }})
-
-  window.onNavigate(ROUTES_PATH.Bills)
-  await new Promise(process.nextTick);
-  const message = await screen.getByText(/Erreur 500/)
-  expect(message).toBeTruthy()
-})
+  store.get.mockImplementationOnce(()=>{
+    Promise.reject(new Error("Erreur 500"))
   })
+const html = BillsUI({error: "Erreur 500"})
+document.body.innerHTML = html
+const message = await screen.getByText(/Erreur 500/)
+expect(message).toBeTruthy()
+})
+})
 })
 
