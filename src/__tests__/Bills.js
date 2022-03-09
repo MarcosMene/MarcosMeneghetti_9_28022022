@@ -186,32 +186,31 @@ expect(handleClickIconEye).toHaveBeenCalled()
 const modale = screen.getAllByTestId('modaleFile')
 expect(modale).toBeTruthy()
 })
-test('fetches bill from mock API GET and data.length = 4', async ()=>{
-  const getSpy = jest.spyOn(store, 'get')
-  const bills = await store.get()
-  expect(getSpy).toHaveBeenCalledTimes(1)
-  expect(bills).toBeDefined()
-  expect(bills.data.length).toBe(4)
+// test('fetches bill from mock API GET and data.length = 4', async ()=>{
+//   const getSpy = jest.spyOn(store, 'get')
+//   const bills = await store.get()
+//   expect(getSpy).toHaveBeenCalledTimes(1)
+//   expect(bills).toBeDefined()
+//   expect(bills.data.length).toBe(4)
+// })
+
+})
 })
 
-test('fetches bills from an API then fails with 404 message error', async ()=>{
-  store.get.mockImplementationOnce(()=>{
-    Promise.reject(new Error('Erreur 404'))
+describe('Given I am user connected as employee',()=>{
+  describe('When I navigate to Bill page',()=>{
+    test("fetches bills from mock API GET", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+    
+      const contentPending = await screen.getByText("Mes notes de frais")
+      expect(contentPending).toBeTruthy()
+      expect(screen.getByTestId("btn-new-bill")).toBeTruthy()
+    })
   })
-const html = BillsUI({error: 'Erreur 404'})
-document.body.innerHTML = html
-const message = await screen.getByText(/Erreur 404/)
-expect(message).toBeTruthy()
-})
-test ('fetches messages from an API and fails with 500 message error', async ()=>{
-  store.get.mockImplementationOnce(()=>{
-    Promise.reject(new Error("Erreur 500"))
-  })
-const html = BillsUI({error: "Erreur 500"})
-document.body.innerHTML = html
-const message = await screen.getByText(/Erreur 500/)
-expect(message).toBeTruthy()
-})
-})
 })
 
