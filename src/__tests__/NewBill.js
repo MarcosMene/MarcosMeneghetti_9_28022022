@@ -9,6 +9,7 @@ import BillsUI from '../views/BillsUI'
 import {localStorageMock} from '../__mocks__/localStorage'
 import {ROUTES} from '../constants/routes'
 import store from '../__mocks__/store'
+import Store from "../app/Store";
 
 // identify as employee 
 const onNavigate = (pathname) => {
@@ -77,9 +78,9 @@ expect(handleSubmit).toHaveBeenCalled()
 
 
 
-//integration test POST request
+//integration 
 describe("Given I am a user connected as en Employee",()=>{
-  describe("When I crete new Bill",()=>{
+  describe("When I valid bill form",()=>{
     test('Then a bill is created', async ()=>{
       document.body.innerHTML = NewBillUI()
       const newBill = new NewBill({
@@ -93,7 +94,7 @@ describe("Given I am a user connected as en Employee",()=>{
     name: "testing",
       vat: "80",
      date: "2001-04-15",
- amount: 400,
+      amount: 400,
       type: "Hôtel et logement",
       commentary: "séminaire billed",
       pct:25,
@@ -115,4 +116,61 @@ expect(handleSubmit).toHaveBeenCalled()
 
     })
   })
+})
+
+
+// test integration POST method
+describe("When I navigate to the newbill page, and I want to post an PNG file", () => {
+  test("Then function handleChangeFile should be called", () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      jest.spyOn(Store.api, 'post').mockImplementation(store.post)
+
+      const newBill = new NewBill({
+          document,
+          onNavigate,
+          store: Store,
+          localStorage: window.localStorage
+      });
+      const handleChangeFile = jest.fn(newBill.handleChangeFile);
+      const file = screen.getByTestId("file");
+
+      file.addEventListener("change", handleChangeFile);
+      fireEvent.change(file, {
+          target: {
+              files: [new File(["image"], "test.png", {type: "image/png"})]
+          }
+      });
+      expect(handleChangeFile).toHaveBeenCalled();
+  });
+})
+
+describe("When I navigate to the newbill page, and I want to post an PDF file", () => {
+  test("Then function handleChangeFile should be called", () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      jest.spyOn(Store.api, 'post').mockImplementation(store.post)
+
+      const newBill = new NewBill({
+          document,
+          onNavigate,
+          store: Store,
+          localStorage: window.localStorage
+      });
+
+
+      const file = screen.getByTestId("file");
+
+      const handleChangeFile = jest.fn(newBill.handleChangeFile);
+
+      file.addEventListener("change", handleChangeFile);
+
+      fireEvent.change(file, {
+          target: {
+              files: [new File(["image"], "test.pdf", {type: "image/pdf"})]
+          }
+      });
+      expect(handleChangeFile).toHaveBeenCalled();
+      expect(file.value).toBe('')
+  });
 })
