@@ -75,6 +75,7 @@ e.target.value = ''
   }
 
   // not need to cover this function by tests
+  // istanbul ignore next
   updateBill = (bill) => {
     if (this.store) {
       this.store
