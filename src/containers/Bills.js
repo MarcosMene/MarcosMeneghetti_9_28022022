@@ -11,12 +11,12 @@ export default class {
     if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     if (iconEye) iconEye.forEach(icon => {
-      icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
+      icon.addEventListener('click', () => this.handleClickIconEye(icon))
     })
     new Logout({ document, localStorage, onNavigate })
   }
 
-  handleClickNewBill = (e) => {
+  handleClickNewBill = () => {
     this.onNavigate(ROUTES_PATH['NewBill'])
   }
 
@@ -27,22 +27,20 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
+  //istanbul ignore next
   getBills = () => {
-    const userEmail = localStorage.getItem('user') ?
-    JSON.parse(localStorage.getItem('user')).email : ""
     if (this.store) {
       return this.store
       .bills()
       .list()
-      .then((snapshot) => {
-        //sort by Date DESC
-        const bills = snapshot.sort((a,b) => new Date(b.date)-new Date(a.date)).map((doc) => {
+      .then(snapshot => {
+        const bills = snapshot
+          .map(doc => {
             try {
               return {
                 ...doc,
                 date: formatDate(doc.date),
                 status: formatStatus(doc.status)
-                
               }
             } catch(e) {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
@@ -55,11 +53,9 @@ export default class {
               }
             }
           })
-          .filter(bill => bill.email === userEmail)
           console.log('length', bills.length)
         return bills
       })
-      .catch((error) => error)
     }
   }
 }
