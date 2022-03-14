@@ -214,7 +214,7 @@
             }
           }})
   
-      
+
         const html = BillsUI({error: "Erreur 500"})
         document.body.innerHTML = html
         const message = await screen.getByText(/Erreur 500/)
