@@ -92,7 +92,6 @@ describe("Given I am a user connected as en Employee",()=>{
     const billTest = {
      
     name: "testing",
-      vat: "80",
      date: "2001-04-15",
       amount: 400,
       type: "Hôtel et logement",
@@ -108,10 +107,23 @@ describe("Given I am a user connected as en Employee",()=>{
 //click submit
 const handleSubmit = jest.fn((e)=> newBill.handleSubmit(e))
 
+//apply to the DOM
+newBill.createBill = (newBill) => newBill
+document.querySelector(`select[data-testid="expense-type"]`).value = billTest.type
+document.querySelector(`input[data-testid="expense-name"]`).value = billTest.name
+document.querySelector(`input[data-testid="datepicker"]`).value = billTest.date
+document.querySelector(`input[data-testid="amount"]`).value = billTest.amount
+document.querySelector(`input[data-testid="vat"]`).value = billTest.vat
+document.querySelector(`input[data-testid="pct"]`).value = billTest.pct
+document.querySelector(`textarea[data-testid="commentary"]`).value = billTest.commentary
+newBill.fileUrl = billTest.fileUrl
+newBill.fileName = billTest.fileName
+
 submit.addEventListener('click', handleSubmit)
 
 fireEvent.click(submit)
 
+//verify if handleSubmit was called
 expect(handleSubmit).toHaveBeenCalled()
 
     })
