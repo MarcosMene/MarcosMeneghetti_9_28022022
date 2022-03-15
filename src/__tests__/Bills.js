@@ -34,7 +34,7 @@
        const windowIcon = screen.getByTestId('icon-window')
        //to-do write expect expression
  
-       expect(windowIcon.classList.contains('active-icon')).toBe(true)
+       expect(windowIcon).toHaveClass('active-icon')
  
      })
      test("Then bills should be ordered from earliest to latest", () => {
