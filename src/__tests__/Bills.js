@@ -203,6 +203,7 @@
           const html = BillsUI({error: "Erreur 404"})
           document.body.innerHTML = html
           const message = await screen.getByText(/Erreur 404/)
+          expect(message).toBeTruthy()
       })
   
       test("fetches messages from an API and fails with 500 message error", async () => {
@@ -218,6 +219,7 @@
         const html = BillsUI({error: "Erreur 500"})
         document.body.innerHTML = html
         const message = await screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
       })
     })
    })
