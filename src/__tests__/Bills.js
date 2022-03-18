@@ -47,6 +47,30 @@
        const datesSorted = [...dates].sort(antiChrono)
        expect(dates).toEqual(datesSorted)
      })
+     test('Then I fetch bills', () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+
+      store.bills = jest.fn().mockImplementationOnce(() => {
+        return {
+          list: jest.fn().mockResolvedValue([{ id: 1, data: () => ({ date: '' }) }])
+        }
+      })
+
+      const bills = new Bills({
+        document, onNavigate, store: store, localStorage
+      })
+
+      const res = bills.getBills()
+
+      expect(res).toEqual(Promise.resolve({}))
+    })
+ 
+
+
    })
  })
  
@@ -129,7 +153,6 @@
  describe('Given I am employee', ()=>{
    describe('When I navigate to Bill page', ()=>{
  
- 
  test('When I click on eye to show details of bill a modal should open', async()=>{
    const onNavigate = (pathname) => {
      document.body.innerHTML = ROUTES({pathname})
@@ -144,17 +167,12 @@
    document, onNavigate, store:null, bills, localStorage: window.localStorage
  })
  $.fn.modal = jest.fn()
- 
- const handleClickIconEye = jest.fn((e) => bill.handleClickIconEye(eye[0]))
- 
- const eye = screen.getAllByTestId('icon-eye')
- eye[0].addEventListener('click', handleClickIconEye)
- fireEvent.click(eye[0])
- 
+ const eye = screen.getAllByTestId('icon-eye')[0]
+ const handleClickIconEye = jest.fn(bill.handleClickIconEye(eye))      
+ eye.addEventListener('click', handleClickIconEye)
+ fireEvent.click(eye)
  expect(handleClickIconEye).toHaveBeenCalled()
- 
- const modale = screen.getAllByTestId('modaleFile')
- expect(modale).toBeTruthy()
+ expect(screen.getByTestId('modaleFile')).toBeTruthy()  
  })
  })
  })
