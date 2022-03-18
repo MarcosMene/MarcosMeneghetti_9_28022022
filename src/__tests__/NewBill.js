@@ -131,7 +131,6 @@ expect(handleSubmit).toHaveBeenCalled()
 })
 
 
-// test integration POST method
 describe("When I navigate to the newbill page, and I want to post an PNG file", () => {
   test("Then function handleChangeFile should be called", () => {
       const html = NewBillUI();
@@ -185,4 +184,52 @@ describe("When I navigate to the newbill page, and I want to post an PDF file", 
       expect(handleChangeFile).toHaveBeenCalled();
       expect(file.value).toBe('')
   });
+})
+
+describe("When an error occurs on API", () => {
+  beforeEach(() => {
+    jest.spyOn(store, "bills")
+    Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+    )
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee',
+      email: "a@a"
+    }))
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.appendChild(root)
+    
+  })
+  test("fetches bills from an API and fails with 404 message error", async () => {
+
+    store.bills.mockImplementationOnce(() => {
+      return {
+        list : () =>  {
+          return Promise.reject(new Error("Erreur 404"))
+        }
+      }})
+      const html = BillsUI({error: "Erreur 404"})
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+  })
+
+  test("fetches messages from an API and fails with 500 message error", async () => {
+
+    store.bills.mockImplementationOnce(() => {
+      return {
+        list : () =>  {
+          return Promise.reject(new Error("Erreur 500"))
+        }
+      }})
+
+
+    const html = BillsUI({error: "Erreur 500"})
+    document.body.innerHTML = html
+    const message = await screen.getByText(/Erreur 500/)
+    expect(message).toBeTruthy()
+  })
 })
