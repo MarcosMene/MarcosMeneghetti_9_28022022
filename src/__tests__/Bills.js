@@ -47,7 +47,14 @@
        const datesSorted = [...dates].sort(antiChrono)
        expect(dates).toEqual(datesSorted)
      })
-     test('Then I fetch bills', () => {
+   
+ 
+   })
+ })
+
+ describe('Given I am connected as an employee',()=>{
+   describe('When I am on Bill Page',()=>{
+    test('Then return bills data', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -68,9 +75,6 @@
 
       expect(res).toEqual(Promise.resolve({}))
     })
- 
-
-
    })
  })
  
