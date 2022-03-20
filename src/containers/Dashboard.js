@@ -86,6 +86,7 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
+
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     if (this.counter % 2 === 0) {
@@ -131,30 +132,29 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
-    if (this.counter === undefined || this.index !== index) this.counter = 0
-    if (this.index === undefined || this.index !== index) this.index = index
-    if (this.counter % 2 === 0) {
-     
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
-      $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
-      this.counter ++
+    const arrow = $(`#arrow-icon${index}`)[0];
+    const container = $(`#status-bills-container${index}`)[0];
+    arrow.classList.toggle("open-section");
+    if (arrow.classList.contains("open-section")) {
+      // it is opened.
+      $(arrow).css({ transform: "rotate(0deg)" });
+      if (container.hasChildNodes()) {
+        const fBills = filteredBills(bills, getStatus(index));
+        container.innerHTML = cards(fBills);
+        fBills.forEach(bill => {
+          $(`#open-bill${bill.id}`).click(e =>
+            this.handleEditTicket(e, bill, bills)
+          );
+        });
+      }
+      container.style.display = "block";
     } else {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
-      $(`#status-bills-container${this.index}`)
-        .html("")
-      this.counter ++
+      // it is closed
+      $(arrow).css({ transform: "rotate(90deg)" });
+      container.style.display = "none";
     }
-
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).off('click')
-      $(`#open-bill${bill.id}`).click((e) => {
-        this.handleEditTicket(e, bill, bills)})
-    })
-
-    return bills
-
   }
+
 
   getBillsAllUsers = () => {
     if (this.store) {
