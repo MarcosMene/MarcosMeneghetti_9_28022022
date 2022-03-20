@@ -155,7 +155,7 @@ export default class {
     return bills
 
   }
-//istanbul ignore next
+
   getBillsAllUsers = () => {
     if (this.store) {
       return this.store
